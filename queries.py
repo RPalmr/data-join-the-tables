@@ -32,7 +32,25 @@ def spent_per_customer(db):
         Simon  |   432
         ...
     '''
-    pass  # YOUR CODE HERE
+    query = """
+      SELECT
+        c.ContactName,
+        SUM(od.UnitPrice * od.Quantity) AS totalamount
+    FROM
+        customers c
+    JOIN
+    	orders o ON o.CustomerID = c.CustomerID
+   	JOIN
+   		orderdetails od ON od.OrderID = o.OrderID
+   	GROUP BY c.CustomerID
+   	ORDER BY totalamount
+
+    """
+
+    results = db.execute(query)
+    results = results.fetchall()
+    spent_per_customer_list = [(row[0], round(row[1], 2)) for row in results]
+    return spent_per_customer_list
 
 def best_employee(db):
     '''Implement the best_employee method to determine who’s the best employee! By “best employee”, we mean the one who sells the most.
