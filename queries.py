@@ -44,7 +44,6 @@ def spent_per_customer(db):
    		orderdetails od ON od.OrderID = o.OrderID
    	GROUP BY c.CustomerID
    	ORDER BY totalamount
-
     """
 
     results = db.execute(query)
@@ -53,12 +52,48 @@ def spent_per_customer(db):
     return spent_per_customer_list
 
 def best_employee(db):
-    '''Implement the best_employee method to determine who’s the best employee! By “best employee”, we mean the one who sells the most.
-    We expect the function to return a tuple like: ('FirstName', 'LastName', 6000 (the sum of all purchase)). The order of the information is irrelevant'''
-    pass  # YOUR CODE HERE
+    '''done - line too long'''
+    query = """
+    SELECT
+        e.firstname,
+        e.lastname,
+        SUM(od.quantity * od.UnitPrice) as total_quantity
+    FROM
+        orderdetails od
+    JOIN
+        orders o ON od.orderid = o.orderid
+    JOIN
+        employees e ON e.employeeid = o.employeeid
+    GROUP BY
+        e.employeeid, e.firstname, e.lastname
+    ORDER BY
+        total_quantity DESC
+    LIMIT 1;
+    """
+
+    results = db.execute(query)
+    results = results.fetchone()
+
+    return results
 
 def orders_per_customer(db):
     '''Return a list of tuples where each tuple contains the contactName
     of the customer and the number of orders they made (contactName,
     number_of_orders). Order the list by ascending number of orders'''
-    pass  # YOUR CODE HERE
+    query= """
+    SELECT
+        c.contactname,
+        COUNT(o.orderid) as number_of_orders
+    FROM
+        customers c
+    LEFT JOIN
+        orders o ON c.customerid = o.customerid
+    GROUP BY
+        c.contactname
+    ORDER BY
+        number_of_orders ASC;"""
+
+    results = db.execute(query)
+    results = results.fetchall()
+
+    return results
