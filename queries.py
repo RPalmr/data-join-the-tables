@@ -3,7 +3,25 @@
 def detailed_orders(db):
     '''return a list of all orders (order_id, customer.contact_name,
     employee.firstname) ordered by order_id'''
-    pass  # YOUR CODE HERE
+    query = """
+    SELECT
+        o.orderid,
+        c.contactname,
+        e.firstname
+    FROM
+        orders o
+    JOIN
+        customers c ON  c.CustomerID = o.CustomerID
+    JOIN
+        employees e ON e.EmployeeID = o.EmployeeID
+    ORDER BY
+        o.orderid;
+    """
+
+    results = db.execute(query)
+    results = results.fetchall()
+
+    return results
 
 def spent_per_customer(db):
     '''return the total amount spent per customer ordered by ascending total
